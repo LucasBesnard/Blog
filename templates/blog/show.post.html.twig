@@ -1,0 +1,116 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}{{ post.title|upper|slice(0, 20) }}{% endblock %}
+
+{% block body %}
+<div class="container-md-fluid">
+
+    {# Titre h1 #}
+    <div class="row">
+        <h1 class="h2 col-12 text-center text-title-h1 my-4">{{ post.title|capitalize }}</h1>
+    </div>
+
+    <div class="row mb-3">
+        <p class="h5 col-12 text-center">par <span class="text-title-h2">{{ post.author.username }}</span></p>
+    </div>
+
+    {########### AFFICHAGE DE LA PUBLICATION ###########}
+    <div class="row">
+        <div class="col-12 col-md-8 offset-md-2">
+            <div class="card my-2 bg-post">
+                <div class="card-header">
+                    {# Date et auteur de la publication et de la modification si nécessaire #}
+                    <div class="py-1 text-muted">
+                        Publié le <span class="text-title-h2 px-1">{{ post.createdAt|date('d/m/Y à H\\hi') }}</span>
+                        {% if post.updatedAt %}
+                            et modifié le <span class="text-warning px-1">{{ post.updatedAt|date('d/m/Y à H\\hi') }}</span>
+                        {% endif %}
+                    </div> 
+                </div>     
+
+                <div class="card-body">                   
+                    {# Affichage du contenu de la publication #}
+                    <div class="mb-2">
+                        {{ post.content }}
+                    </div>
+                </div>
+
+                {# Si l'utilisateur a le rôle admin, on affiche un menu avec un bouton permettant de supprimer/modifier la publication #}
+                {% if is_granted('ROLE_ADMIN') %}     
+                    <div class="card-footer d-flex d-row justify-content-evenly mt-3">
+                        <a href="{{ path('app_blog_edit_post', {'slug': post.slug}) }}" class="btn btn-outline-success pe-3">
+                            <i class="fas fa-edit me-1"></i>Modifier
+                        </a>                                
+                        {{ include('blog/_delete_form.post.html.twig') }}
+                    </div>
+                {% endif %} 
+            </div>
+        </div>
+    </div>
+
+    {############ ESPACE POUR LES COMMENTAIRES ###########}
+    <div class="row">
+        <div class="col-12 col-md-8 offset-md-2">
+            <div class="bg-dark p-4 my-4">
+
+                {# Nombre de commentaires dans le titre H2 #}
+                {% if post.comments|length %}
+                    <h2 class="h4 text-title-h2 text-center mb-3">Commentaires ({{ post.comments|length }})</h2>
+                {% endif %}
+             
+                {# Affichage de tous les commentaires en les parcourant avec une boucle #}
+                {% for comment in post.comments %}
+
+                    <div class="card my-3 bg-post">
+
+                        {# Date et auteur du commentaire #}
+                        <div class="card-header text-muted">
+                            Ajouté par<span class="text-primary px-1">{{ comment.author.username }}</span>Le<span class="text-light ps-1">{{ comment.createdAt|date('d/m/Y à H\\hi') }}</span>                    
+                        </div>   
+
+                        {# Contenu du commentaire #}                 
+                        <div class="card-body"> 
+                            {{ comment.content }}
+                        </div>
+
+                        {# Si l'utilisateur est admin, affichage de la suppression du commentaire #}
+                        {% if is_granted('ROLE_ADMIN') %}
+                            <div class="card-footer d-flex d-row justify-content-end p-1">
+                                {{ include('blog/_delete_form.comment.html.twig') }}                            
+                            </div>
+                        {% endif %}                        
+
+                    </div>
+
+                {% else %}
+                    <p class="text-center text-uppercase alert alert-info">Aucun commentaire pour cette publication</p>
+                {% endfor %}                
+
+
+                {# Si l'utilisateur est connecté, affichage du formulaire de création d'un nouveau commentaire #}
+                {% if app.user %}
+                    <h2 class="h4 text-center text-title-h1 my-4">Écrire un {% if post.comments|length %}nouveau{% else %}premier{% endif %} commentaire</h2>
+                    {# Champ pour le commentaire (formulaire) #}
+                    {{ form_start(form) }}
+                        {{ form_widget(form) }}
+                        <button class="btn btn-outline-info w-100">{{ button_label|default('Commenter') }}</button>
+                    {{ form_end(form) }}
+                {% else %}
+                    <p class="text-center text-info mt-4">
+                        Vous devez <a href="{{ path('app_main_login') }}" class="text-title-h1">vous connecter</a> pour laisser un commentaire.
+                    </p>
+                {% endif %}
+
+            </div>
+        </div>
+    </div>
+
+    {# Lien pour retourner à la liste des articles #}
+    <div class="row mt-2">
+        <p class="text-center col-12">
+            <a class="btn btn-outline-info" href="{{ path('app_blog_index') }}">Retour à la liste des publications</a>
+        </p>
+    </div>
+
+</div>
+{% endblock %}
