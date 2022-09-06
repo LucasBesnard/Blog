@@ -1,5 +1,4 @@
-<h1> BLOG_WF3 </h1>
-<img src="./assets/blog_wf3.gif" alt="blog_wf3" />
+<h1> BLOG_WF3 </h1><img src="./assets/blog_wf3.gif" alt="blog_wf3" />
 
 
 EXEMPLE DE STRUCTURE DE BLOG SUR SYMFONY 6 
