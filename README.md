@@ -1,8 +1,6 @@
- BLOG_WF3
-                <p align="center">
-                    <a href="https://github.com/LucasBesnard/Blog_WF3" target="_blank" rel="noreferrer"> <img
-                            src="./assets/blog_wf3.gif" alt="blog_wf3" /> </a>
-                <p align="center">
+<h1> BLOG_WF3 </h1>
+   <img src="./assets/blog_wf3.gif" alt="blog_wf3" />
+
 EXEMPLE DE STRUCTURE DE BLOG SUR SYMFONY 6 
 
 
